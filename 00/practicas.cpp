@@ -31,6 +31,12 @@ GLfloat rectanglePosCol[] = { -0.7,  0.7, 0.9, 0.9, 0.0,
 							    0.7, -0.7, 0.0, 0.9, 0.9
 };
 
+GLfloat rectanglePosCol_Blue[] = { -0.7,  0.7, 0.0, 0.0, 1.0,
+							   -0.7, -0.7, 0.0, 0.0, 1.0,
+							    0.7,  0.7, 0.0, 0.0, 1.0,
+							    0.7, -0.7, 0.0, 0.0, 1.0
+};
+
 GLuint vertexArrayId[2];
 
 int main(int argc, char** argv) {
@@ -118,11 +124,20 @@ void createTriangle(){
 }
 
 void createRectangle(){
+#define TESTCOLORARRAY 0
 	GLuint bufferID[2];
 	glBindVertexArray(vertexArrayId[1]);
 	glGenBuffers(2, bufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, bufferID[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(rectanglePosCol), rectanglePosCol, GL_STATIC_DRAW);
+#if TESTCOLORARRAY
+	glBufferData(GL_ARRAY_BUFFER, sizeof(rectanglePosCol_Blue), rectanglePosCol_Blue, GL_STATIC_DRAW);
+#else
+	glBufferData(GL_ARRAY_BUFFER, sizeof(rectanglePosCol_Blue), rectanglePosCol, GL_STATIC_DRAW);
+#endif
 	glVertexPointer(3, GL_FLOAT, 5*sizeof(GLfloat), 0);
 	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glColorPointer( 3, GL_FLOAT, 5*sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)) );
+	glEnableClientState(GL_COLOR_ARRAY);
+
 }
