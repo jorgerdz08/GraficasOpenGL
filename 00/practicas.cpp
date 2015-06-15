@@ -11,8 +11,17 @@
 void preocessKey(unsigned char, int, int);
 
 int main(int argc, char** argv) {
+	int screenX, screenY;
+	int screenResX, screenResY;
+
 	glutInit(&argc, argv);
-	glutInitWindowPosition(WINDOW_XPOS, WINDOW_YPOS);
+
+	screenResX  = glutGet(GLUT_SCREEN_WIDTH);
+	screenResY = glutGet(GLUT_SCREEN_HEIGHT);
+	screenX  = (screenResX-WINDOW_WIDTH)/2;
+	screenY =  (screenResY-WINDOW_HEIGHT)/2;
+
+	glutInitWindowPosition(screenX, screenY);
 	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	glutCreateWindow("Mi primer ventana GLUT");
