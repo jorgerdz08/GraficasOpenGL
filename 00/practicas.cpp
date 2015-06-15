@@ -105,7 +105,7 @@ void display(){
 	glBindVertexArray(vertexArrayId[0]);
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 	glBindVertexArray(vertexArrayId[1]);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 5);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glutSwapBuffers();
 }
 
