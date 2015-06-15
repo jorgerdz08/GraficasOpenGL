@@ -18,6 +18,7 @@ void processSpecialKey(int, int, int);
 void display(void);
 void createTriangle(void);
 void createRectangle(void);
+void createRectangle_2Buffers(void);
 
 GLfloat trianglePos[] = { 0.0,  0.9,  1.0,
 						  -0.9, -0.9,  1.0,
@@ -35,6 +36,18 @@ GLfloat rectanglePosCol_Blue[] = { -0.7,  0.7, 0.0, 0.0, 1.0,
 							   -0.7, -0.7, 0.0, 0.0, 1.0,
 							    0.7,  0.7, 0.0, 0.0, 1.0,
 							    0.7, -0.7, 0.0, 0.0, 1.0
+};
+
+GLfloat rectanglePos[] = {  -0.7,  0.7,
+							-0.7, -0.7,
+							 0.7,  0.7,
+							 0.7, -0.7
+};
+
+GLfloat rectangleCol[] = {  0.9, 0.9, 0,
+							0.9, 0,   0,
+							0, 	 0,   0.9,
+							0,   0.9, 0.9
 };
 
 GLuint vertexArrayId[2];
@@ -66,7 +79,8 @@ int main(int argc, char** argv) {
 	glClearColor(0.72, 0.28, 0.46, 1.0);
 	glGenVertexArrays(2, vertexArrayId);
 	createTriangle();
-	createRectangle();
+	//createRectangle();
+	createRectangle_2Buffers();
 
 	glutMainLoop();
 
@@ -132,12 +146,28 @@ void createRectangle(){
 #if TESTCOLORARRAY
 	glBufferData(GL_ARRAY_BUFFER, sizeof(rectanglePosCol_Blue), rectanglePosCol_Blue, GL_STATIC_DRAW);
 #else
-	glBufferData(GL_ARRAY_BUFFER, sizeof(rectanglePosCol_Blue), rectanglePosCol, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(rectanglePosCol), rectanglePosCol, GL_STATIC_DRAW);
 #endif
 	glVertexPointer(3, GL_FLOAT, 5*sizeof(GLfloat), 0);
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	glColorPointer( 3, GL_FLOAT, 5*sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)) );
 	glEnableClientState(GL_COLOR_ARRAY);
+}
 
+void createRectangle_2Buffers(){
+
+	GLuint bufferID[2];
+	glBindVertexArray(vertexArrayId[1]);
+	glGenBuffers(2, bufferID);
+
+	glBindBuffer(GL_ARRAY_BUFFER, bufferID[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(rectanglePos), rectanglePos, GL_STATIC_DRAW);
+	glVertexPointer(2, GL_FLOAT, 0, 0);
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, bufferID[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(rectangleCol), rectangleCol, GL_STATIC_DRAW);
+	glColorPointer(3, GL_FLOAT, 0, 0);
+	glEnableClientState(GL_COLOR_ARRAY);
 }
