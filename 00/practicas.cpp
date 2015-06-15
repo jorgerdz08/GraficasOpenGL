@@ -17,10 +17,18 @@ void processSpecialKey(int, int, int);
 
 void display(void);
 void createTriangle(void);
+void createRectangle(void);
 
 GLfloat trianglePos[] = { 0.0,  0.9,  1.0,
 						  -0.9, -0.9,  1.0,
 						   0.9, -0.9,  1.0
+};
+
+//								x,    y,   r,   g,   b
+GLfloat rectanglePosCol[] = { -0.7,  0.7, 0.9, 0.9, 0.0,
+							   -0.7, -0.7, 0.9, 0.0, 0.0,
+							    0.7,  0.7, 0.0, 0.0, 0.9,
+							    0.7, -0.7, 0.0, 0.9, 0.9
 };
 
 GLuint vertexArrayId[2];
@@ -52,6 +60,7 @@ int main(int argc, char** argv) {
 	glClearColor(0.72, 0.28, 0.46, 1.0);
 	glGenVertexArrays(2, vertexArrayId);
 	createTriangle();
+	createRectangle();
 
 	glutMainLoop();
 
@@ -95,6 +104,8 @@ void display(){
 	glClear(GL_COLOR_BUFFER_BIT);
 	glBindVertexArray(vertexArrayId[0]);
 	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glBindVertexArray(vertexArrayId[1]);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 5);
 	glutSwapBuffers();
 }
 
@@ -103,5 +114,15 @@ void createTriangle(){
 	glBindBuffer(GL_ARRAY_BUFFER, 1);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(trianglePos), trianglePos, GL_STATIC_DRAW);
 	glVertexPointer(3, GL_FLOAT, 0, 0);
+	glEnableClientState(GL_VERTEX_ARRAY);
+}
+
+void createRectangle(){
+	GLuint bufferID[2];
+	glBindVertexArray(vertexArrayId[1]);
+	glGenBuffers(2, bufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, bufferID[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(rectanglePosCol), rectanglePosCol, GL_STATIC_DRAW);
+	glVertexPointer(3, GL_FLOAT, 5*sizeof(GLfloat), 0);
 	glEnableClientState(GL_VERTEX_ARRAY);
 }
