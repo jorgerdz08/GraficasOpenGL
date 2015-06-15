@@ -31,4 +31,8 @@ void preocessKey(unsigned char key, int x, int y)
 	if( 27 == key){
     	exit(0);
 	}
+	else if( 'f' == key){
+		//glutEnterGameMode();	// Hangs when run on laptop HP ZBook
+		glutFullScreenToggle();
+	}
 }
