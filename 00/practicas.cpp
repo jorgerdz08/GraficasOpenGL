@@ -1,5 +1,9 @@
+#include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <stdio.h>
+#include <iostream>
+
+using namespace std;
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -29,6 +33,12 @@ int main(int argc, char** argv) {
 
 	glutKeyboardFunc(preocessKey);
 	glutSpecialFunc(processSpecialKey);
+
+	glewInit();
+	if(GLEW_VERSION_4_0){
+		cout << "OpenGL 4.0 supported" << endl;
+	}
+
 	glutMainLoop();
 
 	return 0;
