@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include "utils/Utils.h"
 #include <stdio.h>
 #include <iostream>
 
