@@ -14,11 +14,6 @@ using namespace std;
 
 #define DEBUGMSG 0
 
-void keyboardHandler(unsigned char, int, int);
-void display(void);
-void createTriangle(void);
-void initShaders(void);
-
 GLfloat trianglePos[] = {  0.0,  0.9,  1.0,
 						  -0.9, -0.9,  1.0,
 						   0.9, -0.9,  1.0
@@ -31,8 +26,8 @@ GLfloat triangleCol[] = {  1.0,  0.0, 0.0,
 
 GLuint programId;
 GLuint vertexArrayId[1];
-GLint vertexPositionLoc, vertexColorLoc;
-
+GLint vertexPositionLoc, vertexColorLoc, startXLoc;
+float startX = 0.0;
 
 void keyboardHandler(unsigned char key, int x, int y){
 #if DEBUGMSG
@@ -47,8 +42,13 @@ void keyboardHandler(unsigned char key, int x, int y){
 	}
 }
 
+void timerFunc(int id) {
+	glutTimerFunc(5, timerFunc, 1);
+	glutPostRedisplay();
+}
+
 void initShaders(){
-	GLuint vShaderId = Utils::compileShader("shaders/color_position.vsh", GL_VERTEX_SHADER);
+	GLuint vShaderId = Utils::compileShader("shaders/col_pos_startX.vsh", GL_VERTEX_SHADER);
 	if(!Utils::shaderCompiled(vShaderId)) return;
 
 	GLuint fShaderId= Utils::compileShader("shaders/color.fsh", GL_FRAGMENT_SHADER);
@@ -61,6 +61,7 @@ void initShaders(){
 
 	vertexPositionLoc= glGetAttribLocation(programId, "vertexPosition");
 	vertexColorLoc = glGetAttribLocation(programId, "vertexColorAV");
+	startXLoc = glGetUniformLocation(programId, "startX");
 
 }
 
@@ -85,10 +86,18 @@ void display(){
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glUseProgram(programId);
+
+#if DEBUGMSG
+	printf("startX: %f\n", startX);
+#endif
+	glUniform1f(startXLoc, startX);
+
 	glBindVertexArray(vertexArrayId[0]);
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 
 	glutSwapBuffers();
+	startX += 0.005;
+	if(startX >= 1.9) startX = -1.9;
 }
 
 int main(int argc, char** argv) {
@@ -108,6 +117,7 @@ int main(int argc, char** argv) {
 
 	glutKeyboardFunc(keyboardHandler);
 	glutDisplayFunc(display);
+	glutTimerFunc(5, timerFunc, 1);
 
 	glewInit();
 	initShaders();
