@@ -9,5 +9,6 @@ out vec3 vertexColorVF;
 
 void main() {
 	vertexColorVF = vertexColorAV;
-	gl_Position = vec4(vertexPosition.x + startX, vertexPosition.y, vertexPosition.z, 1);  
+	gl_Position = vec4( vertexPosition + vec3(startX, 0, 0), 1);   // Another method to assign the uniform to gl_Position
+	//gl_Position = vec4(vertexPosition.x + startX, vertexPosition.y, vertexPosition.z, 1);  
 }
