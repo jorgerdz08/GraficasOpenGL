@@ -26,8 +26,13 @@ GLfloat triangleCol[] = {  1.0,  0.0, 0.0,
 
 GLuint programId;
 GLuint vertexArrayId[1];
-GLint vertexPositionLoc, vertexColorLoc, startXLoc;
-float startX = 0.0;
+GLint vertexPositionLoc, vertexColorLoc, startXLoc, colorFactorLoc;
+
+GLfloat r = 1.0;
+GLfloat g = 1.0;
+GLfloat b = 1.0;
+
+GLfloat startX = 0.0;
 
 void keyboardHandler(unsigned char key, int x, int y){
 #if DEBUGMSG
@@ -62,6 +67,7 @@ void initShaders(){
 	vertexPositionLoc= glGetAttribLocation(programId, "vertexPosition");
 	vertexColorLoc = glGetAttribLocation(programId, "vertexColorAV");
 	startXLoc = glGetUniformLocation(programId, "startX");
+	colorFactorLoc = glGetUniformLocation(programId, "colorFactor");
 
 }
 
@@ -91,6 +97,7 @@ void display(){
 	printf("startX: %f\n", startX);
 #endif
 	glUniform1f(startXLoc, startX);
+	glUniform3f(colorFactorLoc, r, g, b);
 
 	glBindVertexArray(vertexArrayId[0]);
 	glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -98,6 +105,15 @@ void display(){
 	glutSwapBuffers();
 	startX += 0.005;
 	if(startX >= 1.9) startX = -1.9;
+
+	//r *= 0.9996;
+	r -= 0.005;
+	if(r<0.5) r = 1.0;
+
+	//g *= 0.9993;
+	g -= 0.005;
+	if(g<0.5) g = 1.0;
+
 }
 
 int main(int argc, char** argv) {
