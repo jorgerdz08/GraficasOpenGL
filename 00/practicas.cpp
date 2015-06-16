@@ -26,13 +26,14 @@ GLfloat triangleCol[] = {  1.0,  0.0, 0.0,
 
 GLuint programId;
 GLuint vertexArrayId[1];
-GLint vertexPositionLoc, vertexColorLoc, startXLoc, colorFactorLoc;
+GLuint vertexPositionLoc, vertexColorLoc, startXLoc, colorFactorLoc, mousePositionLoc;
 
 GLfloat r = 1.0;
 GLfloat g = 1.0;
 GLfloat b = 1.0;
 
 GLfloat startX = 0.0;
+GLint mouseX, mouseY;
 
 void keyboardHandler(unsigned char key, int x, int y){
 #if DEBUGMSG
@@ -52,11 +53,15 @@ void timerFunc(int id) {
 	glutPostRedisplay();
 }
 
+void motionFunc(int x, int y) {
+	mouseX = x;
+	mouseY = glutGet(GLUT_WINDOW_HEIGHT) - y;
+}
 void initShaders(){
 	GLuint vShaderId = Utils::compileShader("shaders/col_pos_startX.vsh", GL_VERTEX_SHADER);
 	if(!Utils::shaderCompiled(vShaderId)) return;
 
-	GLuint fShaderId= Utils::compileShader("shaders/color.fsh", GL_FRAGMENT_SHADER);
+	GLuint fShaderId = Utils::compileShader("shaders/mouse_color.fsh", GL_FRAGMENT_SHADER);
 	if(!Utils::shaderCompiled(fShaderId)) return;
 
 	programId = glCreateProgram();
@@ -68,7 +73,7 @@ void initShaders(){
 	vertexColorLoc = glGetAttribLocation(programId, "vertexColorAV");
 	startXLoc = glGetUniformLocation(programId, "startX");
 	colorFactorLoc = glGetUniformLocation(programId, "colorFactor");
-
+	mousePositionLoc   = glGetUniformLocation(programId, "mousePosition");
 }
 
 void transferData(){
@@ -98,6 +103,7 @@ void display(){
 #endif
 	glUniform1f(startXLoc, startX);
 	glUniform3f(colorFactorLoc, r, g, b);
+	glUniform2i(mousePositionLoc, mouseX, mouseY);
 
 	glBindVertexArray(vertexArrayId[0]);
 	glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -134,6 +140,7 @@ int main(int argc, char** argv) {
 	glutKeyboardFunc(keyboardHandler);
 	glutDisplayFunc(display);
 	glutTimerFunc(5, timerFunc, 1);
+	glutPassiveMotionFunc(motionFunc);
 
 	glewInit();
 	initShaders();
