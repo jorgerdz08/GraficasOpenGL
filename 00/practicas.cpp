@@ -19,14 +19,19 @@ void display(void);
 void createTriangle(void);
 void initShaders(void);
 
-GLfloat trianglePos[] = { 0.0,  0.9,  1.0,
+GLfloat trianglePos[] = {  0.0,  0.9,  1.0,
 						  -0.9, -0.9,  1.0,
 						   0.9, -0.9,  1.0
 };
 
+GLfloat triangleCol[] = {  1.0,  0.0, 0.0,
+						   0.0,  1.0, 0.0,
+						   0.0,  0.0, 1.0
+};
+
 GLuint programId;
 GLuint vertexArrayId[1];
-GLint vertexPositionLoc;
+GLint vertexPositionLoc, vertexColorLoc;
 
 
 void keyboardHandler(unsigned char key, int x, int y){
@@ -43,10 +48,10 @@ void keyboardHandler(unsigned char key, int x, int y){
 }
 
 void initShaders(){
-	GLuint vShaderId = Utils::compileShader("shaders/position.vsh", GL_VERTEX_SHADER);
+	GLuint vShaderId = Utils::compileShader("shaders/color_position.vsh", GL_VERTEX_SHADER);
 	if(!Utils::shaderCompiled(vShaderId)) return;
 
-	GLuint fShaderId= Utils::compileShader("shaders/orange.fsh", GL_FRAGMENT_SHADER);
+	GLuint fShaderId= Utils::compileShader("shaders/color.fsh", GL_FRAGMENT_SHADER);
 	if(!Utils::shaderCompiled(fShaderId)) return;
 
 	programId = glCreateProgram();
@@ -54,18 +59,26 @@ void initShaders(){
 	glAttachShader(programId, fShaderId);
 	glLinkProgram(programId);
 
-	vertexPositionLoc= glGetAttribLocation(programId, "position");
+	vertexPositionLoc= glGetAttribLocation(programId, "vertexPosition");
+	vertexColorLoc = glGetAttribLocation(programId, "vertexColorAV");
+
 }
 
 void transferData(){
 	glGenVertexArrays(1, vertexArrayId);
 	glBindVertexArray(vertexArrayId[0]);
-	GLuint bufferId[1];
-	glGenBuffers(1, bufferId);
+	GLuint bufferId[2];
+	glGenBuffers(2, bufferId);
+
 	glBindBuffer(GL_ARRAY_BUFFER, bufferId[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(trianglePos), trianglePos, GL_STATIC_DRAW);
 	glVertexAttribPointer(vertexPositionLoc, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(vertexPositionLoc);
+
+	glBindBuffer(GL_ARRAY_BUFFER, bufferId[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(triangleCol), triangleCol, GL_STATIC_DRAW);
+	glVertexAttribPointer(vertexColorLoc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(vertexColorLoc);
 }
 
 void display(){
@@ -97,13 +110,9 @@ int main(int argc, char** argv) {
 	glutDisplayFunc(display);
 
 	glewInit();
-	if(GLEW_VERSION_4_0){
-		cout << "OpenGL 4.0 supported" << endl;
-	}
-
 	initShaders();
 	transferData();
-	glClearColor(0.25, 0.80, 0.40, 1.0);
+	glClearColor(0.85, 0.90, 0.75, 1.0);
 
 	glutMainLoop();
 	return 0;
